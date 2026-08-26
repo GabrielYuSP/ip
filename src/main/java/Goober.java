@@ -18,8 +18,8 @@ public class Goober {
         System.out.println(line);
 
         Scanner scanner = new Scanner(System.in);
-        // Array to store up to 100 tasks
-        String[] tasks = new String[100];
+        // Task Object to store up to 100 tasks
+        Task[] tasks = new Task[100];
         // Task Counter for loop
         int taskCount = 0;
 
@@ -35,15 +35,51 @@ public class Goober {
             // List Function
             else if(input.equals("list")){
                 System.out.println(line);
+                System.out.println("Here are the tasks in your list:");
                 // Loop through tasks, taskCount number of times
                 for(int i = 0; i < taskCount; i++){
                     System.out.println((i+1) + "." + tasks[i]);
                 }
                 System.out.println(line);
             }
+            // Mark as done
+            else if(input.startsWith("mark ")){
+                int index = Integer.parseInt(input.substring(5)) - 1;
+                if(tasks[index].isDone()){
+                    System.out.println(line);
+                    System.out.println("This task is already marked as done!");
+                    System.out.println(line);
+                }
+                else{
+                    tasks[index].markAsDone();
+
+                    System.out.println(line);
+                    System.out.println("Nice! I've marked this task as done:");
+                    System.out.println(tasks[index].toString());
+                    System.out.println(line);
+                }
+            }
+            // Unmark
+            else if(input.startsWith("unmark ")){
+                int index = Integer.parseInt(input.substring(7)) -1;
+                // Check if the task is already unmarked
+                if(tasks[index].isDone()){
+                    System.out.println(line);
+                    System.out.println("This task is already marked as not done!");
+                    System.out.println(line);
+                }
+                else{
+                    tasks[index].markAsUndone();
+
+                    System.out.println(line);
+                    System.out.println("OK, I've marked this task as not done yet:");
+                    System.out.println(tasks[index].toString());
+                    System.out.println(line);
+                }
+            }
             // Store input as task into array
             else{
-                tasks[taskCount] = input;
+                tasks[taskCount] = new Task(input);
                 taskCount++;
                 System.out.println(line);
                 System.out.println("added " + input);
