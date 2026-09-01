@@ -1,3 +1,4 @@
+import java.text.NumberFormat;
 import java.util.Scanner;
 
 /**
@@ -17,6 +18,14 @@ public class Goober {
         System.out.println(banner);
         System.out.println("Hello! I'm Goober.");
         System.out.println("What can I do for you?");
+        System.out.println(LINE);
+    }
+
+    private static void printTaskAdded(Task task, int taskCount) {
+        System.out.println(LINE);
+        System.out.println("Got it. I've added this task:");
+        System.out.println("  " + task);
+        System.out.println("Now you have " + taskCount + " tasks in the list.");
         System.out.println(LINE);
     }
 
@@ -47,41 +56,84 @@ public class Goober {
                 for (int i = 0; i < taskCount; i++) {
                     System.out.println((i + 1) + "." + tasks[i]);
                 }
+                // Print out number of tasks in the list
+                System.out.println("Now you have " + taskCount + " tasks in the list.");
                 System.out.println(LINE);
             } else if (input.startsWith("mark ")) {
-                int index = Integer.parseInt(input.substring(5)) - 1;
-                if (tasks[index].isDone()) {
-                    System.out.println(LINE);
-                    System.out.println("This task is already marked as done!");
-                    System.out.println(LINE);
-                } else {
-                    tasks[index].markAsDone();
+                try{
+                    int index = Integer.parseInt(input.substring(5)) - 1;
+                    if (index < 0 || index >= taskCount){
+                        System.out.println(LINE);
+                        System.out.println("Error: Task not found!");
+                        System.out.println(LINE);
+                    }
+                    else if (tasks[index].isDone()) {
+                        System.out.println(LINE);
+                        System.out.println("This task is already marked as done!");
+                        System.out.println(LINE);
+                    } else {
+                        tasks[index].markAsDone();
 
+                        System.out.println(LINE);
+                        System.out.println("Nice! I've marked this task as done:");
+                        System.out.println(tasks[index].toString());
+                        System.out.println(LINE);
+                    }
+                } catch (NumberFormatException e){
                     System.out.println(LINE);
-                    System.out.println("Nice! I've marked this task as done:");
-                    System.out.println(tasks[index].toString());
+                    System.out.println("Error: Please enter a valid task!");
                     System.out.println(LINE);
                 }
+
             } else if (input.startsWith("unmark ")) {
-                int index = Integer.parseInt(input.substring(7)) - 1;
-                if (tasks[index].isDone()) {
-                    System.out.println(LINE);
-                    System.out.println("This task is already marked as not done!");
-                    System.out.println(LINE);
-                } else {
-                    tasks[index].markAsUndone();
+                try{
+                    int index = Integer.parseInt(input.substring(7)) - 1;
+                    if (index < 0 || index >= taskCount){
+                        System.out.println(LINE);
+                        System.out.println("Error: Task not found!");
+                        System.out.println(LINE);
+                    }
+                    else if (!tasks[index].isDone()) {
+                        System.out.println(LINE);
+                        System.out.println("This task is already marked as not done!");
+                        System.out.println(LINE);
+                    } else {
+                        tasks[index].markAsUndone();
 
+                        System.out.println(LINE);
+                        System.out.println("OK, I've marked this task as not done yet:");
+                        System.out.println(tasks[index].toString());
+                        System.out.println(LINE);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e){
                     System.out.println(LINE);
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println(tasks[index].toString());
+                    System.out.println("Error: Task not found!");
                     System.out.println(LINE);
                 }
-            } else {
-                tasks[taskCount] = new Task(input);
+            }
+            else if(input.startsWith("todo ")){
+                String description = input.substring(5);
+                tasks[taskCount] = new Todo(description);
                 taskCount++;
-                System.out.println(LINE);
-                System.out.println("added " + input);
-                System.out.println(LINE);
+                printTaskAdded(tasks[taskCount-1], taskCount);
+            }
+            else if(input.startsWith("deadline ")){
+                int byIndex = input.indexOf("/by ");
+                String description = input.substring(9, byIndex).trim();
+                String by = input.substring(byIndex + 4).trim();
+                tasks[taskCount] = new Deadline(description, by);
+                taskCount++;
+                printTaskAdded(tasks[taskCount - 1], taskCount);
+            }
+            else if(input.startsWith("event ")){
+                int fromIndex = input.indexOf("/from ");
+                int toIndex = input.indexOf("/to ");
+                String description = input.substring(6, fromIndex).trim();
+                String from = input.substring(fromIndex + 6, toIndex).trim();
+                String to = input.substring(toIndex + 4);
+                tasks[taskCount] = new Event(description, from, to);
+                taskCount++;
+                printTaskAdded(tasks[taskCount - 1], taskCount);
             }
         }
         scanner.close();
