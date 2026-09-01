@@ -1,7 +1,12 @@
 import java.util.Scanner;
 
+/**
+ * Runs the Goober task management application.
+ */
 public class Goober {
-    public static void main(String[] args) {
+    private static final String LINE = "____________________________________________________________";
+
+    private static void printWelcomeMessage(){
         String banner = "____________________________________________________________\n" +
                 "  ____              _               \n"
                 + " / ___| ___   ___  | |__   ___  _ __  \n"
@@ -9,81 +14,74 @@ public class Goober {
                 + "| |_| | (_) | (_) || |_) |  __/| |    \n"
                 + " \\____|\\___/ \\___/ |_.__/ \\___||_|    \n"
                 + "____________________________________________________________\n";
-
-        String line = "____________________________________________________________";
-
         System.out.println(banner);
         System.out.println("Hello! I'm Goober.");
         System.out.println("What can I do for you?");
-        System.out.println(line);
+        System.out.println(LINE);
+    }
+
+    /**
+     * Starts the interactive task management application.
+     *
+     * @param args Command-line arguments, which are not used.
+     */
+    public static void main(String[] args) {
+        printWelcomeMessage();
 
         Scanner scanner = new Scanner(System.in);
-        // Task Object to store up to 100 tasks
+        // Stores up to 100 tasks.
         Task[] tasks = new Task[100];
-        // Task Counter for loop
+        // Tracks the number of tasks currently stored.
         int taskCount = 0;
 
-        while(true){
+        while (true) {
             String input = scanner.nextLine();
-            // Base case, break
-            if(input.equalsIgnoreCase("bye")){
-                System.out.println(line);
+            if (input.equalsIgnoreCase("bye")) {
+                System.out.println(LINE);
                 System.out.println("Bye. Hope to see you again soon!");
-                System.out.println(line);
+                System.out.println(LINE);
                 break;
-            }
-            // List Function
-            else if(input.equals("list")){
-                System.out.println(line);
+            } else if (input.equals("list")) {
+                System.out.println(LINE);
                 System.out.println("Here are the tasks in your list:");
-                // Loop through tasks, taskCount number of times
-                for(int i = 0; i < taskCount; i++){
-                    System.out.println((i+1) + "." + tasks[i]);
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println((i + 1) + "." + tasks[i]);
                 }
-                System.out.println(line);
-            }
-            // Mark as done
-            else if(input.startsWith("mark ")){
+                System.out.println(LINE);
+            } else if (input.startsWith("mark ")) {
                 int index = Integer.parseInt(input.substring(5)) - 1;
-                if(tasks[index].isDone()){
-                    System.out.println(line);
+                if (tasks[index].isDone()) {
+                    System.out.println(LINE);
                     System.out.println("This task is already marked as done!");
-                    System.out.println(line);
-                }
-                else{
+                    System.out.println(LINE);
+                } else {
                     tasks[index].markAsDone();
 
-                    System.out.println(line);
+                    System.out.println(LINE);
                     System.out.println("Nice! I've marked this task as done:");
                     System.out.println(tasks[index].toString());
-                    System.out.println(line);
+                    System.out.println(LINE);
                 }
-            }
-            // Unmark
-            else if(input.startsWith("unmark ")){
-                int index = Integer.parseInt(input.substring(7)) -1;
-                // Check if the task is already unmarked
-                if(tasks[index].isDone()){
-                    System.out.println(line);
+            } else if (input.startsWith("unmark ")) {
+                int index = Integer.parseInt(input.substring(7)) - 1;
+                if (tasks[index].isDone()) {
+                    System.out.println(LINE);
                     System.out.println("This task is already marked as not done!");
-                    System.out.println(line);
-                }
-                else{
+                    System.out.println(LINE);
+                } else {
                     tasks[index].markAsUndone();
 
-                    System.out.println(line);
+                    System.out.println(LINE);
                     System.out.println("OK, I've marked this task as not done yet:");
                     System.out.println(tasks[index].toString());
-                    System.out.println(line);
+                    System.out.println(LINE);
                 }
-            }
-            // Store input as task into array
-            else{
+            } else {
                 tasks[taskCount] = new Task(input);
                 taskCount++;
-                System.out.println(line);
+                System.out.println(LINE);
                 System.out.println("added " + input);
-                System.out.println(line);
+                System.out.println(LINE);
             }
         }
         scanner.close();
