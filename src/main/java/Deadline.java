@@ -1,22 +1,22 @@
 /**
  * Represents a task that must be completed by a specified date or time.
  */
-public class Deadline extends Task{
+public class Deadline extends Task {
     protected String by;
 
     /**
      * Creates a deadline task.
      *
      * @param description Description of the task.
-     * @param by Date or time by which the task should be completed.
+     * @param by          Date or time by which the task should be completed.
      */
-    public Deadline(String description, String by){
+    public Deadline(String description, String by) {
         super(description);
         this.by = by;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "[D]" + super.toString() + " (by: " + by + ")";
     }
 

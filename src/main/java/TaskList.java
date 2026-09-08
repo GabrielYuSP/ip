@@ -10,7 +10,7 @@ public class TaskList {
      *
      * @param task Task to add.
      */
-    public void addTask(Task task){
+    public void addTask(Task task) {
         tasks[taskCount] = task;
         taskCount++;
     }
@@ -21,7 +21,7 @@ public class TaskList {
      * @param index Zero-based task index.
      * @return Task at the specified index.
      */
-    public Task getTask(int index){
+    public Task getTask(int index) {
         return tasks[index];
     }
 
@@ -30,7 +30,7 @@ public class TaskList {
      *
      * @return Current task count.
      */
-    public int getTaskCount(){
+    public int getTaskCount() {
         return taskCount;
     }
 }
