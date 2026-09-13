@@ -1,3 +1,5 @@
+package goober.task;
+
 /**
  * Represents a task that must be completed by a specified date or time.
  */
