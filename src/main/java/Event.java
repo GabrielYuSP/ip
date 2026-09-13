@@ -1,5 +1,3 @@
-package goober.task;
-
 /**
  * Represents a task that takes place during a specified time period.
  */
