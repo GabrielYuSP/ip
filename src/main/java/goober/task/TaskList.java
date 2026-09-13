@@ -1,3 +1,5 @@
+package goober.task;
+
 /**
  * Stores and manages the tasks in the application.
  */

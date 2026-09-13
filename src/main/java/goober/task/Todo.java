@@ -1,3 +1,5 @@
+package goober.task;
+
 /**
  * Represents a task without a deadline or event period.
  */
