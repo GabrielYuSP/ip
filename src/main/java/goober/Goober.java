@@ -19,13 +19,15 @@ public class Goober {
      * @param args Command-line arguments, which are not used.
      */
     public static void main(String[] args) {
+        Storage storage = new Storage();
         Parser parser = new Parser();
         Ui ui = new Ui();
         ui.showWelcome();
 
         Scanner scanner = new Scanner(System.in);
         TaskList taskList = new TaskList();
-        CommandHandler commandHandler = new CommandHandler(taskList, ui, parser);
+        storage.load(taskList);
+        CommandHandler commandHandler = new CommandHandler(taskList, ui, parser, storage);
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine().trim();
