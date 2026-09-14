@@ -1,11 +1,11 @@
 package goober.task;
+import java.util.ArrayList;
 
 /**
  * Stores and manages the tasks in the application.
  */
 public class TaskList {
-    private Task[] tasks = new Task[100];
-    private int taskCount = 0;
+    private final ArrayList<Task> tasks = new ArrayList<>();
 
     /**
      * Adds a task to the end of the task list.
@@ -13,8 +13,7 @@ public class TaskList {
      * @param task Task to add.
      */
     public void addTask(Task task) {
-        tasks[taskCount] = task;
-        taskCount++;
+        tasks.add(task);
     }
 
     /**
@@ -24,7 +23,16 @@ public class TaskList {
      * @return Task at the specified index.
      */
     public Task getTask(int index) {
-        return tasks[index];
+        return tasks.get(index);
+    }
+
+    /**
+     * Removes the task at the specified zero-based index.
+     *
+     * @param index Zero-based task index.
+     */
+    public void deleteTask(int index) {
+        tasks.remove(index);
     }
 
     /**
@@ -33,6 +41,6 @@ public class TaskList {
      * @return Current task count.
      */
     public int getTaskCount() {
-        return taskCount;
+        return tasks.size();
     }
 }

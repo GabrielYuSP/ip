@@ -114,6 +114,24 @@ public class CommandHandler {
         }
     }
 
+    private void deleteTask(String input) {
+        int index;
+        try {
+            index = Integer.parseInt(input.substring(6).trim()) - 1;
+        } catch (NumberFormatException e) {
+            ui.showError("Enter a valid task number!");
+            return;
+        }
+
+        if (index < 0 || index >= taskList.getTaskCount()) {
+            ui.showError("Task not found!");
+            return;
+        }
+        Task task = taskList.getTask(index);
+        taskList.deleteTask(index);
+        ui.showDeleted(task, taskList.getTaskCount());
+    }
+
     public boolean handleCommand(String input) {
         String command = parser.getCommand(input);
         switch (command) {
@@ -148,6 +166,14 @@ public class CommandHandler {
                     ui.showError("Enter a valid task number!");
                 }
                 return false;
+            case "delete":
+                if(input.length() > 6){
+                    deleteTask(input);
+                } else {
+                    ui.showError("Enter a valid task number!");
+                }
+                return false;
+
             case "todo":
                 try {
                     addTodo(input);
