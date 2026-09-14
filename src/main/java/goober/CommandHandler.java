@@ -10,11 +10,13 @@ public class CommandHandler {
     private final TaskList taskList;
     private final Ui ui;
     private final Parser parser;
+    private final Storage storage;
 
-    public CommandHandler(TaskList taskList, Ui ui, Parser parser) {
+    public CommandHandler(TaskList taskList, Ui ui, Parser parser, Storage storage) {
         this.taskList = taskList;
         this.ui = ui;
         this.parser = parser;
+        this.storage = storage;
     }
 
     /**
@@ -29,6 +31,7 @@ public class CommandHandler {
         }
         Task task = new Todo(description);
         taskList.addTask(task);
+        storage.save(taskList);
         ui.showTaskAdded(task, taskList.getTaskCount());
     }
 
@@ -49,6 +52,7 @@ public class CommandHandler {
         }
         Task task = new Deadline(description, by);
         taskList.addTask(task);
+        storage.save(taskList);
         ui.showTaskAdded(task, taskList.getTaskCount());
     }
 
@@ -71,6 +75,7 @@ public class CommandHandler {
         }
         Task task = new Event(description, from, to);
         taskList.addTask(task);
+        storage.save(taskList);
         ui.showTaskAdded(task, taskList.getTaskCount());
     }
 
@@ -90,6 +95,7 @@ public class CommandHandler {
         } else {
             Task task = taskList.getTask(index);
             task.markAsDone();
+            storage.save(taskList);
             ui.showTaskMarked(task);
         }
     }
@@ -110,6 +116,7 @@ public class CommandHandler {
         } else {
             Task task = taskList.getTask(index);
             task.markAsUndone();
+            storage.save(taskList);
             ui.showTaskUnmarked(task);
         }
     }

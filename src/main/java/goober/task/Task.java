@@ -7,6 +7,10 @@ public class Task {
     private String description;
     private boolean isDone;
 
+    public String getDescription() {
+        return description;
+    }
+
     /**
      * Creates a task with the given description.
      *
