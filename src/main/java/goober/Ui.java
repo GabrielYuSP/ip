@@ -58,6 +58,7 @@ public class Ui {
         System.out.println("  list");
         System.out.println("  mark <task number>");
         System.out.println("  unmark <task number>");
+        System.out.println("  delete <task number>");
         System.out.println("  help");
         System.out.println("  bye");
         System.out.println(LINE);
@@ -91,6 +92,14 @@ public class Ui {
         System.out.println(LINE);
         System.out.println("OK bro, I've marked this task as not done yet:");
         System.out.println(task);
+        System.out.println(LINE);
+    }
+
+    public void showDeleted(Task task, int taskCount) {
+        System.out.println(LINE);
+        System.out.println("Got it. I've removed this task:");
+        System.out.println("  " + task);
+        System.out.println("Now you have " + taskCount + " tasks in the list.");
         System.out.println(LINE);
     }
 
