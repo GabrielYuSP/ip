@@ -136,6 +136,7 @@ public class CommandHandler {
         }
         Task task = taskList.getTask(index);
         taskList.deleteTask(index);
+        storage.save(taskList);
         ui.showDeleted(task, taskList.getTaskCount());
     }
 
