@@ -14,13 +14,8 @@ public class Todo extends Task {
         super(description);
     }
 
-    /**
-     * Returns the todo task's display format.
-     *
-     * @return Task type, completion status, and description.
-     */
     @Override
-    public String toString() {
-        return "[T]" + super.toString();
+    protected String getTaskType() {
+        return "T";
     }
 }

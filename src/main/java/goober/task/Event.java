@@ -28,14 +28,14 @@ public class Event extends Task {
         return to;
     }
 
-    /**
-     * Returns the event task's display format.
-     *
-     * @return Task type, completion status, description, and event period.
-     */
+    @Override
+    protected String getTaskType() {
+        return "E";
+    }
+
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
+        return super.toString() + " (from: " + from + " to: " + to + ")";
     }
 
 }

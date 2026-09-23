@@ -3,7 +3,7 @@ package goober.task;
 /**
  * Represents a task that can be marked as done or not done.
  */
-public class Task {
+public abstract class Task {
     private String description;
     private boolean isDone;
 
@@ -48,8 +48,15 @@ public class Task {
         return isDone ? "X" : " ";
     }
 
+    /**
+     * Returns the short identifier used when displaying this task.
+     *
+     * @return Task type identifier.
+     */
+    protected abstract String getTaskType();
+
     @Override
     public String toString() {
-        return "[" + getStatus() + "] " + description;
+        return "[" + getTaskType() + "][" + getStatus() + "] " + description;
     }
 }
