@@ -1,7 +1,14 @@
 package goober;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.time.LocalDate;
+
+import goober.task.Deadline;
+import goober.task.Event;
 import goober.task.Task;
 import goober.task.TaskList;
+import goober.task.Todo;
 
 public class Ui {
     private static final String LINE = "____________________________________________________________";
@@ -53,9 +60,14 @@ public class Ui {
         System.out.println(LINE);
         System.out.println("Here are the commands you can use:");
         System.out.println("  todo <description>");
-        System.out.println("  deadline <description> /by <date or time>");
-        System.out.println("  event <description> /from <date or time> /to <date or time>");
+        System.out.println("  deadline <description> /by <d/M/yyyy HHmm>");
+        System.out.println("  event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>");
         System.out.println("  list");
+        System.out.println("  list todos");
+        System.out.println("  list deadlines");
+        System.out.println("  list events");
+        System.out.println("  list today");
+        System.out.println("  list <d/M/yyyy>");
         System.out.println("  mark <task number>");
         System.out.println("  unmark <task number>");
         System.out.println("  delete <task number>");
@@ -72,13 +84,143 @@ public class Ui {
     public void showTaskList(TaskList taskList) {
         System.out.println(LINE);
         System.out.println("Here are the tasks in your list:");
+        System.out.println("Use the index on the left to mark or delete a task.");
 
-        for (int i = 0; i < taskList.getTaskCount(); i++) {
-            System.out.println((i + 1) + "." + taskList.getTask(i));
-        }
+        printSection("Todos", Todo.class, taskList);
+        printSortedSection("Deadlines", Deadline.class, taskList,
+                Comparator.comparing(index -> ((Deadline) taskList.getTask(index)).getBy()));
+        printSortedSection("Events", Event.class, taskList,
+                Comparator.comparing((Integer index) -> ((Event) taskList.getTask(index)).getFrom())
+                        .thenComparing(index -> ((Event) taskList.getTask(index)).getTo()));
 
         System.out.println("Now you have " + taskList.getTaskCount() + " tasks in the list!");
         System.out.println(LINE);
+    }
+
+    /**
+     * Displays tasks belonging to one requested task type.
+     *
+     * @param taskList Task list containing the tasks.
+     * @param taskType Task type to display: todos, deadlines, or events.
+     */
+    public void showTaskList(TaskList taskList, String taskType) {
+        System.out.println(LINE);
+        System.out.println("Here are the " + taskType + " in your list:");
+        System.out.println("Use the index on the left to mark or delete a task.");
+
+        switch (taskType) {
+        case "todos":
+            printSection("Todos", Todo.class, taskList);
+            break;
+        case "deadlines":
+            printSortedSection("Deadlines", Deadline.class, taskList,
+                    Comparator.comparing(index -> ((Deadline) taskList.getTask(index)).getBy()));
+            break;
+        case "events":
+            printSortedSection("Events", Event.class, taskList,
+                    Comparator.comparing((Integer index) -> ((Event) taskList.getTask(index)).getFrom())
+                            .thenComparing(index -> ((Event) taskList.getTask(index)).getTo()));
+            break;
+        default:
+            return;
+        }
+
+        System.out.println(LINE);
+    }
+
+    /**
+     * Displays deadlines and events occurring on the specified date.
+     *
+     * @param taskList Task list containing the tasks.
+     * @param date Date on which tasks should occur.
+     */
+    public void showTaskListOnDate(TaskList taskList, LocalDate date) {
+        System.out.println(LINE);
+        System.out.println("Here are the deadlines and events for " + date + ":");
+        System.out.println("Use the index on the left to mark or delete a task.");
+
+        ArrayList<Integer> deadlineIndices = new ArrayList<>();
+        ArrayList<Integer> eventIndices = new ArrayList<>();
+        for (int i = 0; i < taskList.getTaskCount(); i++) {
+            Task task = taskList.getTask(i);
+            if (task instanceof Deadline deadline && deadline.getBy().toLocalDate().equals(date)) {
+                deadlineIndices.add(i);
+            } else if (task instanceof Event event
+                    && !date.isBefore(event.getFrom().toLocalDate())
+                    && !date.isAfter(event.getTo().toLocalDate())) {
+                eventIndices.add(i);
+            }
+        }
+
+        deadlineIndices.sort(Comparator.comparing(index -> ((Deadline) taskList.getTask(index)).getBy()));
+        eventIndices.sort(Comparator.comparing((Integer index) -> ((Event) taskList.getTask(index)).getFrom())
+                .thenComparing(index -> ((Event) taskList.getTask(index)).getTo()));
+
+        printDateSection("Deadlines", "No deadlines today!", deadlineIndices, taskList);
+        printDateSection("Events", "No events today!", eventIndices, taskList);
+        System.out.println(LINE);
+    }
+
+    /**
+     * Prints tasks of one type while retaining their original task-list numbers.
+     *
+     * @param sectionName Name of the section to display.
+     * @param taskType Type of task to include in the section.
+     * @param taskList Task list containing the tasks.
+     */
+    private void printSection(String sectionName, Class<?> taskType, TaskList taskList) {
+        System.out.println("\n" + sectionName + ":");
+
+        for (int i = 0; i < taskList.getTaskCount(); i++) {
+            Task task = taskList.getTask(i);
+            if (taskType.isInstance(task)) {
+                System.out.println((i + 1) + ". " + task);
+            }
+        }
+    }
+
+    /**
+     * Prints tasks of one type sorted by their date values while retaining their original indices.
+     *
+     * @param sectionName Name of the section to display.
+     * @param taskType Type of task to include in the section.
+     * @param taskList Task list containing the tasks.
+     * @param comparator Comparator for the task indices.
+     */
+    private void printSortedSection(String sectionName, Class<?> taskType, TaskList taskList,
+                                    Comparator<Integer> comparator) {
+        System.out.println("\n" + sectionName + ":");
+        ArrayList<Integer> taskIndices = new ArrayList<>();
+
+        for (int i = 0; i < taskList.getTaskCount(); i++) {
+            if (taskType.isInstance(taskList.getTask(i))) {
+                taskIndices.add(i);
+            }
+        }
+
+        taskIndices.sort(comparator);
+        printIndices(taskIndices, taskList);
+    }
+
+    private void printIndices(String sectionName, ArrayList<Integer> taskIndices, TaskList taskList) {
+        System.out.println("\n" + sectionName + ":");
+        printIndices(taskIndices, taskList);
+    }
+
+    private void printDateSection(String sectionName, String emptyMessage,
+                                  ArrayList<Integer> taskIndices, TaskList taskList) {
+        System.out.println("\n" + sectionName + ":");
+        if (taskIndices.isEmpty()) {
+            System.out.println(emptyMessage);
+        } else {
+            printIndices(taskIndices, taskList);
+        }
+    }
+
+    private void printIndices(ArrayList<Integer> taskIndices, TaskList taskList) {
+        for (int index : taskIndices) {
+            System.out.println((index + 1) + ". " + taskList.getTask(index));
+        }
     }
 
     public void showTaskMarked(Task task) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import goober.task.Deadline;
@@ -76,13 +77,23 @@ public class Storage {
                 if(parts.length < 4) {
                     return;
                 }
-                task = new Deadline(description, parts[3]);
+                try {
+                    task = new Deadline(description, LocalDateTime.parse(parts[3]));
+                } catch (java.time.format.DateTimeParseException e) {
+                    return;
+                }
                 break;
             case "E":
                 if(parts.length < 5) {
                     return;
                 }
-                task = new Event(description, parts[3], parts[4]);
+                try {
+                    LocalDateTime from = LocalDateTime.parse(parts[3]);
+                    LocalDateTime to = LocalDateTime.parse(parts[4]);
+                    task = new Event(description, from, to);
+                } catch (java.time.format.DateTimeParseException e) {
+                    return;
+                }
                 break;
             default:
                 return;
