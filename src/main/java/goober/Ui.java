@@ -10,9 +10,13 @@ import goober.task.Task;
 import goober.task.TaskList;
 import goober.task.Todo;
 
+/**
+ * Handles all console input and output for Goober.
+ */
 public class Ui {
     private static final String LINE = "____________________________________________________________";
 
+    /** Displays the application welcome message. */
     public void showWelcome() {
         String banner = "____________________________________________________________\n" +
                 "  ____              _               \n"
@@ -27,6 +31,7 @@ public class Ui {
         System.out.println(LINE);
     }
 
+    /** Displays the application exit message. */
     public void showBye() {
         System.out.println(LINE);
         System.out.println("Bye. Hope to see you again soon!");
@@ -47,6 +52,11 @@ public class Ui {
         System.out.println(LINE);
     }
 
+    /**
+     * Displays an error message.
+     *
+     * @param message Error message to display.
+     */
     public void showError(String message) {
         System.out.println(LINE);
         System.out.println("OOPS!!! " + message);
@@ -230,11 +240,26 @@ public class Ui {
         printIndices(taskIndices, taskList);
     }
 
+    /**
+     * Prints a section heading followed by indexed tasks.
+     *
+     * @param sectionName Section heading.
+     * @param taskIndices Indices of tasks to print.
+     * @param taskList Task list containing the tasks.
+     */
     private void printIndices(String sectionName, ArrayList<Integer> taskIndices, TaskList taskList) {
         System.out.println("\n" + sectionName + ":");
         printIndices(taskIndices, taskList);
     }
 
+    /**
+     * Prints a date-filtered section or its empty-state message.
+     *
+     * @param sectionName Section heading.
+     * @param emptyMessage Message shown when no tasks match.
+     * @param taskIndices Indices of matching tasks.
+     * @param taskList Task list containing the tasks.
+     */
     private void printDateSection(String sectionName, String emptyMessage,
                                   ArrayList<Integer> taskIndices, TaskList taskList) {
         System.out.println("\n" + sectionName + ":");
@@ -245,12 +270,23 @@ public class Ui {
         }
     }
 
+    /**
+     * Prints tasks using their original task-list indices.
+     *
+     * @param taskIndices Indices of tasks to print.
+     * @param taskList Task list containing the tasks.
+     */
     private void printIndices(ArrayList<Integer> taskIndices, TaskList taskList) {
         for (int index : taskIndices) {
             System.out.println((index + 1) + ". " + taskList.getTask(index));
         }
     }
 
+    /**
+     * Displays confirmation that a task was marked as done.
+     *
+     * @param task Marked task.
+     */
     public void showTaskMarked(Task task) {
         System.out.println(LINE);
         System.out.println("Good job! I've marked this task as done:");
@@ -258,6 +294,11 @@ public class Ui {
         System.out.println(LINE);
     }
 
+    /**
+     * Displays confirmation that a task was marked as not done.
+     *
+     * @param task Unmarked task.
+     */
     public void showTaskUnmarked(Task task) {
         System.out.println(LINE);
         System.out.println("OK bro, I've marked this task as not done yet:");
@@ -265,6 +306,12 @@ public class Ui {
         System.out.println(LINE);
     }
 
+    /**
+     * Displays confirmation that a task was deleted.
+     *
+     * @param task Deleted task.
+     * @param taskCount Number of remaining tasks.
+     */
     public void showDeleted(Task task, int taskCount) {
         System.out.println(LINE);
         System.out.println("Got it. I've removed this task:");
@@ -273,6 +320,11 @@ public class Ui {
         System.out.println(LINE);
     }
 
+    /**
+     * Displays a suggested command.
+     *
+     * @param suggestion Suggested valid command.
+     */
     public void showCommandSuggestion(String suggestion) {
         System.out.println("Did you mean \"" + suggestion + "\"?");
     }

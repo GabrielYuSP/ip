@@ -7,6 +7,11 @@ public abstract class Task {
     private String description;
     private boolean isDone;
 
+    /**
+     * Returns the task description.
+     *
+     * @return Task description.
+     */
     public String getDescription() {
         return description;
     }
@@ -21,6 +26,11 @@ public abstract class Task {
         this.isDone = false;
     }
 
+    /**
+     * Checks whether the task is completed.
+     *
+     * @return {@code true} if completed.
+     */
     public boolean isDone() {
         return this.isDone;
     }

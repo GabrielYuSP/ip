@@ -12,6 +12,9 @@ import goober.task.Task;
 import goober.task.TaskList;
 import goober.task.Todo;
 
+/**
+ * Coordinates command parsing, task operations, storage, and user feedback.
+ */
 public class CommandHandler {
     private static final DateTimeFormatter DEADLINE_INPUT_FORMAT =
             DateTimeFormatter.ofPattern("d/M/uuuu HHmm");
@@ -23,6 +26,14 @@ public class CommandHandler {
     private final Parser parser;
     private final Storage storage;
 
+    /**
+     * Creates a command handler with the application's supporting components.
+     *
+     * @param taskList Task list to modify.
+     * @param ui User interface used for feedback.
+     * @param parser Parser used to identify commands.
+     * @param storage Storage used to persist changes.
+     */
     public CommandHandler(TaskList taskList, Ui ui, Parser parser, Storage storage) {
         this.taskList = taskList;
         this.ui = ui;
@@ -108,6 +119,7 @@ public class CommandHandler {
         ui.showTaskAdded(task, taskList.getTaskCount());
     }
 
+    /** Marks the task selected by a user command as completed. */
     private void markTask(String input) {
         int index;
         try {
@@ -129,6 +141,7 @@ public class CommandHandler {
         }
     }
 
+    /** Marks the task selected by a user command as incomplete. */
     private void unmarkTask(String input) {
         int index;
         try {
@@ -150,6 +163,7 @@ public class CommandHandler {
         }
     }
 
+    /** Deletes the task selected by a user command. */
     private void deleteTask(String input) {
         int index;
         try {
@@ -169,6 +183,12 @@ public class CommandHandler {
         ui.showDeleted(task, taskList.getTaskCount());
     }
 
+    /**
+     * Executes one user command.
+     *
+     * @param input Complete command entered by the user.
+     * @return {@code true} when the application should terminate.
+     */
     public boolean handleCommand(String input) {
         String command = parser.getCommand(input);
         switch (command) {

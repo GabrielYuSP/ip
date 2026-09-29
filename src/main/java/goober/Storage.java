@@ -13,6 +13,9 @@ import goober.task.Task;
 import goober.task.TaskList;
 import goober.task.Todo;
 
+/**
+ * Loads tasks from and saves tasks to the application's data file.
+ */
 public class Storage {
     private static final Path DATA_FILE = Paths.get("data", "goober.txt");
 

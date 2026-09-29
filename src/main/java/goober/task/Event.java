@@ -32,10 +32,20 @@ public class Event extends Task {
         this.to = to;
     }
 
+    /**
+     * Returns the event start date and time.
+     *
+     * @return Event start date and time.
+     */
     public LocalDateTime getFrom() {
         return from;
     }
 
+    /**
+     * Returns the event end date and time.
+     *
+     * @return Event end date and time.
+     */
     public LocalDateTime getTo() {
         return to;
     }
@@ -51,6 +61,11 @@ public class Event extends Task {
                 + " to: " + formatDateTime(to) + ") [" + getEventStatus() + "]";
     }
 
+    /**
+     * Determines the event status using the current Singapore time.
+     *
+     * @return Upcoming, ongoing, or ended status.
+     */
     private String getEventStatus() {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Singapore"));
         if (now.isAfter(to)) {
@@ -62,6 +77,12 @@ public class Event extends Task {
         return "ONGOING";
     }
 
+    /**
+     * Formats an event date and time for display.
+     *
+     * @param dateTime Date and time to format.
+     * @return Human-readable date and time.
+     */
     private String formatDateTime(LocalDateTime dateTime) {
         DateTimeFormatter timeFormat = dateTime.getMinute() == 0
                 ? WHOLE_HOUR_DISPLAY_FORMAT
