@@ -202,6 +202,13 @@ public class CommandHandler {
                     ui.showError("Use list, list todos, list deadlines, or list events.");
                 }
                 return false;
+            case "find":
+                if (input.length() > 5) {
+                    ui.showMatchingTasks(taskList, input.substring(5).trim());
+                } else {
+                    ui.showError("Enter a keyword to search for!");
+                }
+                return false;
             case "help":
                 ui.showHelpMessage();
                 return false;
