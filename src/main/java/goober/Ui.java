@@ -68,6 +68,7 @@ public class Ui {
         System.out.println("  list events");
         System.out.println("  list today");
         System.out.println("  list <d/M/yyyy>");
+        System.out.println("  find <keyword>");
         System.out.println("  mark <task number>");
         System.out.println("  unmark <task number>");
         System.out.println("  delete <task number>");
@@ -158,6 +159,33 @@ public class Ui {
 
         printDateSection("Deadlines", "No deadlines today!", deadlineIndices, taskList);
         printDateSection("Events", "No events today!", eventIndices, taskList);
+        System.out.println(LINE);
+    }
+
+    /**
+     * Displays tasks whose descriptions contain the supplied keyword.
+     *
+     * @param taskList Task list to search.
+     * @param keyword Keyword to find, matched without regard to case.
+     */
+    public void showMatchingTasks(TaskList taskList, String keyword) {
+        String normalizedKeyword = keyword.toLowerCase();
+
+        System.out.println(LINE);
+        System.out.println("Here are the matching tasks in your list:");
+
+        boolean hasMatches = false;
+        for (int i = 0; i < taskList.getTaskCount(); i++) {
+            Task task = taskList.getTask(i);
+            if (task.getDescription().toLowerCase().contains(normalizedKeyword)) {
+                System.out.println((i + 1) + ". " + task);
+                hasMatches = true;
+            }
+        }
+
+        if (!hasMatches) {
+            System.out.println("No matching tasks found.");
+        }
         System.out.println(LINE);
     }
 

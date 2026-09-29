@@ -5,7 +5,7 @@ package goober;
  */
 public class Parser {
     private static final String[] VALID_COMMANDS = {
-            "todo", "deadline", "event", "list", "mark", "unmark", "delete", "help", "bye"
+            "todo", "deadline", "event", "list", "find", "mark", "unmark", "delete", "help", "bye"
     };
 
     /**
