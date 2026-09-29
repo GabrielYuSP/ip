@@ -1,5 +1,11 @@
 package goober;
 
+import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import goober.task.Deadline;
 import goober.task.Event;
 import goober.task.Task;
@@ -7,6 +13,11 @@ import goober.task.TaskList;
 import goober.task.Todo;
 
 public class CommandHandler {
+    private static final DateTimeFormatter DEADLINE_INPUT_FORMAT =
+            DateTimeFormatter.ofPattern("d/M/uuuu HHmm");
+    private static final DateTimeFormatter LIST_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("d/M/uuuu");
+
     private final TaskList taskList;
     private final Ui ui;
     private final Parser parser;
@@ -46,10 +57,18 @@ public class CommandHandler {
             throw new GooberException("A deadline must have a description and a /by value!");
         }
         String description = input.substring(9, byIndex).trim();
-        String by = input.substring(byIndex + 4).trim();
-        if (description.isEmpty() || by.isEmpty()) {
+        String byText = input.substring(byIndex + 4).trim();
+        if (description.isEmpty() || byText.isEmpty()) {
             throw new GooberException("A deadline must have a description and a /by value!");
         }
+
+        LocalDateTime by;
+        try {
+            by = LocalDateTime.parse(byText, DEADLINE_INPUT_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new GooberException("Use the deadline format d/M/yyyy HHmm, for example 2/12/2019 1800.");
+        }
+
         Task task = new Deadline(description, by);
         taskList.addTask(task);
         storage.save(taskList);
@@ -68,11 +87,21 @@ public class CommandHandler {
             throw new GooberException("An event must have a description, a /from value, and a /to value!");
         }
         String description = input.substring(6, fromIndex).trim();
-        String from = input.substring(fromIndex + 6, toIndex).trim();
-        String to = input.substring(toIndex + 4).trim();
-        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
+        String fromText = input.substring(fromIndex + 6, toIndex).trim();
+        String toText = input.substring(toIndex + 4).trim();
+        if (description.isEmpty() || fromText.isEmpty() || toText.isEmpty()) {
             throw new GooberException("An event must have a description, a /from value, and a /to value!");
         }
+
+        LocalDateTime from;
+        LocalDateTime to;
+        try {
+            from = LocalDateTime.parse(fromText, DEADLINE_INPUT_FORMAT);
+            to = LocalDateTime.parse(toText, DEADLINE_INPUT_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new GooberException("Use the event format d/M/yyyy HHmm, for example 2/12/2019 1800.");
+        }
+
         Task task = new Event(description, from, to);
         taskList.addTask(task);
         storage.save(taskList);
@@ -153,8 +182,24 @@ public class CommandHandler {
             case "list":
                 if (input.equalsIgnoreCase("list")) {
                     ui.showTaskList(taskList);
+                } else if (input.equalsIgnoreCase("list todos")) {
+                    ui.showTaskList(taskList, "todos");
+                } else if (input.equalsIgnoreCase("list deadlines")) {
+                    ui.showTaskList(taskList, "deadlines");
+                } else if (input.equalsIgnoreCase("list events")) {
+                    ui.showTaskList(taskList, "events");
+                } else if (input.toLowerCase().startsWith("list ")) {
+                    String dateText = input.substring(5).trim();
+                    try {
+                        LocalDate date = dateText.equalsIgnoreCase("today")
+                                ? LocalDate.now(ZoneId.of("Asia/Singapore"))
+                                : LocalDate.parse(dateText, LIST_DATE_FORMAT);
+                        ui.showTaskListOnDate(taskList, date);
+                    } catch (DateTimeParseException e) {
+                        ui.showError("Use list today or list d/M/yyyy, for example list 2/12/2019.");
+                    }
                 } else {
-                    ui.showError("The list command does not accept additional input!");
+                    ui.showError("Use list, list todos, list deadlines, or list events.");
                 }
                 return false;
             case "help":

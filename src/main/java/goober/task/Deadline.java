@@ -1,23 +1,35 @@
 package goober.task;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 /**
  * Represents a task that must be completed by a specified date or time.
  */
 public class Deadline extends Task {
-    protected String by;
+    private static final DateTimeFormatter DATE_DISPLAY_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy");
+    private static final DateTimeFormatter WHOLE_HOUR_DISPLAY_FORMAT =
+            DateTimeFormatter.ofPattern("ha", Locale.ENGLISH);
+    private static final DateTimeFormatter MINUTE_DISPLAY_FORMAT =
+            DateTimeFormatter.ofPattern("h:mma", Locale.ENGLISH);
+
+    private final LocalDateTime by;
 
     /**
      * Creates a deadline task.
      *
      * @param description Description of the task.
-     * @param by          Date or time by which the task should be completed.
+     * @param by          Date and time by which the task should be completed.
      */
-    public Deadline(String description, String by) {
+    public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
     }
 
-    public String getBy() {
+    public LocalDateTime getBy() {
         return by;
     }
 
@@ -28,7 +40,15 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        return super.toString() + " (by: " + by + ")";
+        String formattedDate = by.format(DATE_DISPLAY_FORMAT);
+        DateTimeFormatter timeFormat = by.getMinute() == 0
+                ? WHOLE_HOUR_DISPLAY_FORMAT
+                : MINUTE_DISPLAY_FORMAT;
+        String formattedTime = by.format(timeFormat).toLowerCase(Locale.ENGLISH);
+        String status = by.isBefore(LocalDateTime.now(ZoneId.of("Asia/Singapore")))
+                ? " [OVERDUE]"
+                : "";
+        return super.toString() + " (by: " + formattedDate + " " + formattedTime + ")" + status;
     }
 
 }
